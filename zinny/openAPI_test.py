@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from mock import Mock
-from openAPI_test import APITest
+from openAPI import APITest
 
 class Test_oepnAPI(unittest.TestCase):
 

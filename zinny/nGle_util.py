@@ -13,7 +13,6 @@ class nGle_util():
 
 		return headers
 		
-		
 	def https_post_getData(self, rul_path, params, headers):
 		self.beta_server = 'beta-openapi-zinny.nzincorp.com'
 
