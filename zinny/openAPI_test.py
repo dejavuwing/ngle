@@ -10,19 +10,13 @@ class Test_oepnAPI(unittest.TestCase):
 
 	def setUp(self):
 		testName = self.shortDescription()
-
-		if testName in ('t2', 't3'):
-			ee, data = self.api.loginTestPlayer()
-			self.zat = data['zat']
-			self.playerId = data['player']['playerId']
-		elif testName in ('t4', 't5'):
-			self.playerId = "8523698741.td.1"
+		pass
 
 	def tearDown(slef):
 		pass
 
 	def test_1_loginTestPlayer(self):
-		'''t1'''
+		'''test_1_loginTestPlayer'''
 
 		status, data = self.api.loginTestPlayer()
 		self.mock.zat.return_value = data['zat']
@@ -33,22 +27,22 @@ class Test_oepnAPI(unittest.TestCase):
 		self.assertIsInstance(self.mock.zat(), unicode)
 
 	def test_2_validateZinnyAccessToken(self):
-		'''t2'''
+		'''test_2_validateZinnyAccessToken'''
 
 		status, data = self.api.validateZinnyAccessToken(self.mock.playerId(), self.mock.zat())
 		self.assertEqual(200, status)
 
 	def test_3_refreshZinnyAccessToken(self):
-		'''t3'''
+		'''test_3_refreshZinnyAccessToken'''
 
 		status, data = self.api.refreshZinnyAccessToken(self.mock.playerId(), self.mock.zat())
-		self.mock.zat.return_value = zat = data['zat']
+		self.mock.zat.return_value = data['zat']
 
 		self.assertEqual(200, status)
 		self.assertIsInstance(self.mock.zat(), unicode)
 
 	def test_4_sendMessage(self):
-		'''t4'''
+		'''test_4_sendMessage'''
 
 		status, data = self.api.sendMessage(self.mock.playerId())
 		messageId = data['messageId']
@@ -57,13 +51,60 @@ class Test_oepnAPI(unittest.TestCase):
 		self.assertIsInstance(messageId, unicode)
 
 	def test_5_getReceivedMessages(self):
-		'''t5'''
+		'''test_5_getReceivedMessages'''
 
 		status, data = self.api.getReceivedMessages(self.mock.playerId())
 		item_totalCount = data['totalCount']
 
+		if item_totalCount > 0:
+			claim_itemId = []
+			claim_messageId = []
+			claim_itemId.append(str(data['messages'][0]['items'][0]['itemId']))
+			claim_messageId.append(str(data['messages'][0]['message']['messageId']))
+			self.mock.claim_itemId.return_value = claim_itemId
+			self.mock.claim_messageId.return_value = claim_messageId
+
 		self.assertEqual(200, status)
 		self.assertGreaterEqual(item_totalCount, 0)
+
+	def test_6_claimAttachedItems(self):
+		'''test_6_claimAttachedItems'''
+
+		status, data = self.api.claimAttachedItems(self.mock.playerId(), self.mock.claim_itemId())
+
+		self.assertEqual(200, status)
+		if status == 200:
+			claim_itemId = []
+			claim_itemId.append(data['items'][0]['itemId'])
+
+			print type(claim_itemId)
+			self.assertListEqual(self.mock.claim_itemId(), claim_itemId)
+
+	def test_7_confirmAttachedItems(self):
+		'''test_7_confirmAttachedItems'''
+
+		status, data = self.api.confirmAttachedItems(self.mock.playerId(), self.mock.claim_itemId())
+
+		self.assertEqual(200, status)
+
+	def test_8_claimItems(self):
+		'''test_8_claimItems'''
+
+		status, data = self.api.claimItems(self.mock.playerId(), self.mock.claim_messageId())
+
+		self.assertEqual(200, status)
+		if status == 200:
+			claim_messageId = []
+			claim_messageId.append(data['results'][0]['messageId'])
+			self.assertListEqual(self.mock.claim_messageId(), claim_messageId)
+
+	def test_9_confirmItems(self):
+		'''test_9_confirmItems'''
+
+
+		status, data = self.api.confirmItems(self.mock.playerId(), self.mock.claim_messageId())
+
+		self.assertEqual(200, status)
 
 
 if __name__ == '__main__':

@@ -6,4 +6,4 @@ $ sudo pip install nose-cov
 $ sudo pip install rednose
 $ sudo pip install mock
 
-$ sudo nosetests --with-coverage --rednose unittest_api.py
+$ sudo nosetests --with-coverage --rednose openAPI_test.py

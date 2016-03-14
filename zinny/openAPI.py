@@ -53,7 +53,6 @@ class APITest():
 
 		return (status_code, data)
 
-
 	def validateZinnyAccessToken(self, inPlayerId=None, inZat=None):
 		'''
 		인증토큰(zat)이 유효한지 체크한다. Status Code가 200일 경우, 인증된 것으로 처리하면 된다.
@@ -170,14 +169,162 @@ class APITest():
 
 		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
 		self.item_totalCount = data['totalCount']
-		
-		self.itemIds = []
+
 		if self.item_totalCount >= 20:
 			self.item_totalCount = 20
 
-		for i in range(self.item_totalCount):
-			self.itemIds.append(str(data['messages'][i]['items'][0]['itemId']))
+		self.itemIds = []
+		self.messageIds = []
+		if self.item_totalCount > 0:
+			for i in range(self.item_totalCount):
+				self.itemIds.append(str(data['messages'][i]['items'][0]['itemId']))
+				self.messageIds.append(str(data['messages'][i]['message']['messageId']))
 
+		self.claim_itemId = []
+		self.claim_messageId = []
+		if self.item_totalCount > 0:
+			self.claim_itemId.append(str(data['messages'][0]['items'][0]['itemId']))
+			self.claim_messageId.append(str(data['messages'][0]['message']['messageId']))
+
+		return (status_code, data)
+
+	def claimAttachedItems(self, inPlayerId=None, itemIds=[]):
+		'''
+		미배송 된 아이템 목록을 발송 처리 요청한다.
+		위 API로 동일한 itemId에 대해서 3회 호출 시 에러 처리되며 처리 목록에서 제외된다.
+		http://wiki.nzincorp.com/display/ZP/claimAttachedItems
+		'''
+
+		if inPlayerId == None:
+			inPlayerId = self.playerId
+
+		if len(itemIds) == 0:
+			in_claim_itemId = self.claim_itemId
+		else:
+			in_claim_itemId = itemIds
+
+		url_path = "/service/claimAttachedItems"
+		headers = self.ngle.get_headers(
+			appId = self.appId,
+			appSecret = self.appSecret,
+			playerId = inPlayerId)
+		params = {
+			"itemIds": in_claim_itemId
+			}
+
+		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
+
+		return (status_code, data)
+
+	def confirmAttachedItems(self, inPlayerId=None, itemIds=[]):
+		'''
+		아이템의 배송 트랜잭션을 종료 처리한다.
+		이 API가 호출 되어야 정상적으로 아이템 배송처리가 완료된 것으로 간주한다.
+		http://wiki.nzincorp.com/display/ZP/confirmAttachedItems
+		'''
+
+		if inPlayerId == None:
+			inPlayerId = self.playerId
+
+		if len(itemIds) == 0:
+			in_claim_itemId = self.claim_itemId
+		else:
+			in_claim_itemId = itemIds
+
+		url_path = "/service/confirmAttachedItems"
+		headers = self.ngle.get_headers(
+			appId = self.appId,
+			appSecret = self.appSecret,
+			playerId = inPlayerId)
+		params = {
+			"itemIds": in_claim_itemId
+			}
+
+		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
+
+		return (status_code, data)
+
+	def claimItems(self, inPlayerId=None, messageIds=[]):
+		'''
+		메시지에 포함된 아이템들을 수령한다.
+		위 API로 동일한 itemId에 대해서 3회 호출 시 에러 처리되며 처리 목록에서 제외된다.
+		http://wiki.nzincorp.com/display/ZP/claimItems
+		'''
+
+		if inPlayerId == None:
+			inPlayerId = self.playerId
+
+		if len(messageIds) == 0:
+			in_claim_messageId = self.messageIds
+		else:
+			in_claim_messageId = messageIds
+
+		url_path = "/service/claimItems"
+		headers = self.ngle.get_headers(
+			appId = self.appId,
+			appSecret = self.appSecret,
+			playerId = inPlayerId)
+		params = {
+			"messageIds": in_claim_messageId
+			}
+
+		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
+		
+		return (status_code, data)
+
+	def confirmItems(self, inPlayerId=None, messageIds=[]):
+		'''
+		메시지에 포함된 아이템들의 배송 트랜잭션을 종료 처리한다.
+		이 API가 호출 되어야 정상적으로 아이템 배송처리가 완료된 것으로 간주한다.
+		http://wiki.nzincorp.com/display/ZP/confirmItems
+		'''
+
+		if inPlayerId == None:
+			inPlayerId = self.playerId
+
+		if len(messageIds) == 0:
+			in_claim_messageId = self.messageIds
+		else:
+			in_claim_messageId = messageIds
+
+		url_path = "/service/confirmItems"
+		headers = self.ngle.get_headers(
+			appId = self.appId,
+			appSecret = self.appSecret,
+			playerId = inPlayerId)
+		params = {
+			"messageIds": in_claim_messageId
+			}
+
+		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
+		
+		return (status_code, data)
+
+	def finishMessages(self, inPlayerId=None, messageIds=[]):
+		'''
+		메시지에 포함된 아이템의 배송 트랜잭션을 종료 처리(아이템 지급완료)하고 메시지를 삭제한다.
+		http://wiki.nzincorp.com/display/ZP/finishMessages
+		'''
+
+		if inPlayerId == None:
+			inPlayerId = self.playerId
+
+		if len(messageIds) == 0:
+			in_claim_messageId = self.messageIds
+		else:
+			in_claim_messageId = messageIds
+
+		url_path = "/service/confirmItems"
+		headers = self.ngle.get_headers(
+			appId = self.appId,
+			appSecret = self.appSecret,
+			playerId = inPlayerId)
+		params = {
+			"messageIds": in_claim_messageId
+			}
+
+		status_code, data = self.ngle.https_post_getData(url_path, params, headers)
+		
 		return (status_code, data)
 
 if __name__=='__main__':
@@ -185,24 +332,37 @@ if __name__=='__main__':
 	
 	status_code, data = api.loginTestPlayer()
 	print '-' * 80
-	print status_code, data
-	print '-' * 80
+	# print status_code, '\n', data, '\n', ('-' * 80)
 
 	status_code, data = api.validateZinnyAccessToken()
-	print status_code, data
-	print '-' * 80
+	# print status_code, '\n', data, '\n', ('-' * 80)
 
 	# status_code, data = api.refreshZinnyAccessToken()
-	# print status_code, data
-	# print '-' * 80
+	# print status_code, '\n', data, '\n', ('-' * 80)
 
-	# status_code, data = api.sendMessage()
-	# print status_code, data
-	# print '-' * 80
+	status_code, data = api.sendMessage()
+	# print status_code, '\n', data, '\n', ('-' * 80)
 
 	status_code, data = api.getReceivedMessages()
-	print status_code, data
-	print '-' * 80
+	# print status_code, '\n', data, '\n', ('-' * 80)
+
+	status_code, data = api.claimAttachedItems()
+	# print status_code, '\n', data, '\n', ('-' * 80)
+
+	status_code, data = api.confirmAttachedItems()
+	# print status_code, '\n', data, '\n', ('-' * 80)
+
+	status_code, data = api.claimItems()
+	# print status_code, '\n', data, '\n', ('-' * 80)
+
+	status_code, data = api.confirmItems()
+	# print status_code, '\n', data, '\n', ('-' * 80)
+
+	status_code, data = api.finishMessages()
+	print status_code, '\n', data, '\n', ('-' * 80)
+
+
+	
 
 	
 
