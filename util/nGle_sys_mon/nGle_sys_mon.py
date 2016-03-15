@@ -2,7 +2,6 @@
 import psutil
 import time
 import signal
-
 import csv
 import os
 
@@ -35,8 +34,6 @@ class view_psutil_members:
 
 
 class set_file_members:
-    
-
     def __init__(self):
         self.ngle = nGle_util()
         self.gpm = get_psutil_members()

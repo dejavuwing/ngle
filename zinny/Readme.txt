@@ -7,3 +7,5 @@ $ sudo pip install rednose
 $ sudo pip install mock
 
 $ sudo nosetests --with-coverage --rednose openAPI_test.py
+
+https://docs.python.org/2/library/unittest.html

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import unittest
 from mock import Mock
+
 from openAPI import APITest
+from nGle_util import nGle_util
 
 class Test_oepnAPI(unittest.TestCase):
 
 	api = APITest()
+	ngle = nGle_util()
 	mock = Mock()
 
 	def setUp(self):
@@ -38,8 +41,12 @@ class Test_oepnAPI(unittest.TestCase):
 		status, data = self.api.refreshZinnyAccessToken(self.mock.playerId(), self.mock.zat())
 		self.mock.zat.return_value = data['zat']
 
+		expiryTime = self.ngle.get_timestamp_to_datetime(data['zatExpiryTime'])
+		currentTime = self.ngle.get_time()
+
 		self.assertEqual(200, status)
 		self.assertIsInstance(self.mock.zat(), unicode)
+		self.assertGreaterEqual(expiryTime, currentTime)
 
 	def test_4_sendMessage(self):
 		'''test_4_sendMessage'''
