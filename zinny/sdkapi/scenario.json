@@ -1,0 +1,11 @@
+{
+	"appId": "test03",
+	"appSecret": "67fcd4ed73ead0f278ba43e7d5c72afd292ebead",
+	"deviceId": "8523698741",
+	"market": "googlePlay",
+	"appVer": "0.1.0",
+	"sdkVer": "2.12.0",
+	"os" : "android",
+	"push_receiver_Ids": ["3075070661.zd3.1","3587099309.zd3.1"]
+}
+
