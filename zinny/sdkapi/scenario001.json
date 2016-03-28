@@ -1,0 +1,26 @@
+{
+	"server":{
+		"beta":{
+			"https":"beta-openapi-zinny.nzincorp.com",
+			"wss":"wss://beta-session-ap-northeast-1-zinny.nzincorp.com/session"
+			}
+	},
+	"app":{
+		"appId": "test03",
+		"appSecret": "67fcd4ed73ead0f278ba43e7d5c72afd292ebead",
+		"deviceId": "8523698741",
+		"serialNo": "123456789",
+		"market": "googlePlay",
+		"appVer": "0.1.0",
+		"sdkVer": "2.12.0",
+		"os" : "android",
+		"osVer": "6.0.1",
+		"country": "kr",
+		"lang": "ko",
+		"telecom": "kt",
+		"deviceModel": "lge LG-F600K",
+		"network": "wifi",
+		"loginType": "manual"
+	}
+}
+
